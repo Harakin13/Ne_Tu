@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Только для тебя ✨</title>
-    <!-- ts-ebml: фикс длительности WebM видео -->
     <script src="https://cdn.jsdelivr.net/npm/ts-ebml@2.0.0/lib/ts-ebml.js"></script>
     <style>
         :root {
@@ -43,6 +42,90 @@
             -webkit-tap-highlight-color: transparent
         }
 
+        /* ── CALCULATOR ── */
+        #calc-wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            background: var(--bg)
+        }
+
+        #calc-card {
+            width: 100%;
+            max-width: 340px;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 8px 40px rgba(138, 43, 226, .12)
+        }
+
+        .calc-screen {
+            width: 100%;
+            min-height: 70px;
+            background: var(--bg);
+            border: .5px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 16px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-size: 2rem;
+            font-weight: 600;
+            overflow-x: auto;
+            white-space: nowrap;
+            color: var(--text);
+            letter-spacing: -1px
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px
+        }
+
+        .calc-btn {
+            background: var(--surface2);
+            border: .5px solid var(--border);
+            color: var(--text);
+            padding: 18px 8px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all .12s;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        .calc-btn:active {
+            transform: scale(.91);
+            background: rgba(138, 43, 226, .15)
+        }
+
+        .calc-btn.op {
+            color: var(--accent2)
+        }
+
+        .calc-btn.clr {
+            color: var(--danger)
+        }
+
+        .calc-btn.eq {
+            background: linear-gradient(135deg, var(--accent), #6a0dad);
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 18px rgba(138, 43, 226, .35)
+        }
+
+        .calc-btn.eq:active {
+            opacity: .85;
+            transform: scale(.91)
+        }
+
         #app {
             display: flex;
             flex-direction: column;
@@ -50,7 +133,6 @@
             padding-top: var(--st);
             padding-bottom: var(--sb)
         }
-
 
         /* ── PERM ── */
         #perm-screen {
@@ -66,15 +148,12 @@
             overflow: hidden
         }
 
-        /* космический фон — звёзды через box-shadow */
         #perm-screen::before {
             content: '';
             position: absolute;
             inset: 0;
             pointer-events: none;
-            background:
-                radial-gradient(ellipse 60% 40% at 50% 0%, rgba(138, 43, 226, .22) 0%, transparent 70%),
-                radial-gradient(ellipse 40% 30% at 80% 80%, rgba(176, 110, 243, .12) 0%, transparent 60%);
+            background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(138, 43, 226, .22) 0%, transparent 70%), radial-gradient(ellipse 40% 30% at 80% 80%, rgba(176, 110, 243, .12) 0%, transparent 60%)
         }
 
         #stars {
@@ -219,7 +298,6 @@
             transform: scaleX(-1)
         }
 
-        /* topbar — компактный под мобилку */
         #topbar {
             position: absolute;
             top: 0;
@@ -270,7 +348,6 @@
             flex-shrink: 0
         }
 
-        /* session pill — компактный, только статус */
         #session-pill {
             display: flex;
             align-items: center;
@@ -331,7 +408,6 @@
             height: 16px
         }
 
-        /* rec */
         #rec-indicator {
             position: absolute;
             top: 76px;
@@ -375,7 +451,6 @@
             font-variant-numeric: tabular-nums
         }
 
-        /* controls */
         #controls {
             padding: 24px;
             display: flex;
@@ -389,7 +464,6 @@
             z-index: 10
         }
 
-        /* thumb */
         #thumb-wrap {
             width: 52px;
             height: 52px;
@@ -434,7 +508,6 @@
             display: none
         }
 
-        /* shutter */
         #shutter {
             width: 72px;
             height: 72px;
@@ -464,7 +537,6 @@
             border-radius: 50%
         }
 
-        /* Видео готово: кольцо красное + внутри белый круг (как iPhone) */
         #si.video {
             width: 52px;
             height: 52px;
@@ -476,7 +548,6 @@
             border-color: var(--danger)
         }
 
-        /* Запись идёт: внутри красный скруглённый квадрат = стоп */
         #si.rec {
             width: 26px;
             height: 26px;
@@ -488,7 +559,6 @@
             border-color: var(--danger)
         }
 
-        /* Пауза: внутри полупрозрачный квадрат */
         #si.paused {
             width: 26px;
             height: 26px;
@@ -496,7 +566,6 @@
             background: rgba(239, 68, 68, .5)
         }
 
-        /* Аудио */
         #si.audio {
             width: 52px;
             height: 52px;
@@ -511,7 +580,6 @@
             background: var(--danger)
         }
 
-        /* send-all button */
         #send-btn {
             width: 52px;
             height: 52px;
@@ -559,7 +627,6 @@
             position: relative
         }
 
-        /* pause button — вместо send-btn во время видеозаписи */
         #pause-wrap {
             position: relative;
             display: none
@@ -603,7 +670,6 @@
             font-size: 8px
         }
 
-        /* flash */
         #flash {
             position: absolute;
             inset: 0;
@@ -627,7 +693,125 @@
             }
         }
 
-        /* ── SETTINGS OVERLAY ── */
+        /* ── COUNTDOWN ── */
+        #countdown-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            z-index: 30;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0
+        }
+
+        #countdown-num {
+            font-size: 120px;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1;
+            text-shadow: 0 4px 40px rgba(0, 0, 0, .6);
+            font-variant-numeric: tabular-nums;
+            transition: transform .15s
+        }
+
+        #countdown-num.tick {
+            transform: scale(1.15)
+        }
+
+        #countdown-label {
+            font-size: 16px;
+            color: rgba(255, 255, 255, .7);
+            margin-top: 4px;
+            letter-spacing: 2px;
+            text-transform: uppercase
+        }
+
+        #countdown-cancel {
+            position: absolute;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, .15);
+            border: .5px solid rgba(255, 255, 255, .3);
+            color: #fff;
+            padding: 10px 28px;
+            border-radius: 100px;
+            font-size: 14px;
+            cursor: pointer;
+            backdrop-filter: blur(8px)
+        }
+
+        #countdown-cancel:active {
+            opacity: .7
+        }
+
+        #timer-btn.active {
+            border-color: #f59e0b;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, .15)
+        }
+
+        /* ── AUDIO ── */
+        #audio-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            background: var(--bg);
+            z-index: 6;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px
+        }
+
+        #waveform-canvas {
+            width: 280px;
+            height: 80px;
+            border-radius: 12px
+        }
+
+        #audio-idle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted)
+        }
+
+        #audio-idle svg {
+            width: 48px;
+            height: 48px;
+            opacity: .4
+        }
+
+        #audio-idle span {
+            font-size: 14px
+        }
+
+        #audio-size {
+            font-size: 12px;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums
+        }
+
+        .gi-size {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, .7);
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-size: 9px;
+            color: rgba(255, 255, 255, .7)
+        }
+
+        .gi.over-limit {
+            outline: 2px solid var(--danger)
+        }
+
+        /* ── SETTINGS ── */
         #settings {
             display: none;
             position: fixed;
@@ -735,12 +919,6 @@
             margin-top: 2px
         }
 
-        .hint code {
-            font-family: monospace;
-            opacity: .7
-        }
-
-        /* session info block */
         #sid-block {
             background: rgba(255, 255, 255, .05);
             border: .5px solid var(--border);
@@ -914,24 +1092,6 @@
             border: .5px solid rgba(239, 68, 68, .3)
         }
 
-        .gi-dl {
-            position: absolute;
-            bottom: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, .7);
-            border-radius: 6px;
-            padding: 5px;
-            color: #fff;
-            cursor: pointer;
-            border: none;
-            display: flex
-        }
-
-        .gi-dl svg {
-            width: 12px;
-            height: 12px
-        }
-
         #gal-empty {
             display: flex;
             flex-direction: column;
@@ -947,141 +1107,6 @@
             width: 40px;
             height: 40px;
             opacity: .4
-        }
-
-        /* ── COUNTDOWN ── */
-        #countdown-overlay {
-            display: none;
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, .55);
-            z-index: 30;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0
-        }
-
-        #countdown-num {
-            font-size: 120px;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1;
-            text-shadow: 0 4px 40px rgba(0, 0, 0, .6);
-            font-variant-numeric: tabular-nums;
-            transition: transform .15s
-        }
-
-        #countdown-num.tick {
-            transform: scale(1.15)
-        }
-
-        #countdown-label {
-            font-size: 16px;
-            color: rgba(255, 255, 255, .7);
-            margin-top: 4px;
-            letter-spacing: 2px;
-            text-transform: uppercase
-        }
-
-        #countdown-cancel {
-            position: absolute;
-            bottom: 110px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, .15);
-            border: .5px solid rgba(255, 255, 255, .3);
-            color: #fff;
-            padding: 10px 28px;
-            border-radius: 100px;
-            font-size: 14px;
-            cursor: pointer;
-            backdrop-filter: blur(8px)
-        }
-
-        #countdown-cancel:active {
-            opacity: .7
-        }
-
-        /* timer button active */
-        #timer-btn.active {
-            border-color: #f59e0b;
-            color: #f59e0b;
-            background: rgba(245, 158, 11, .15)
-        }
-
-        /* ── AUDIO MODE ── */
-        #audio-overlay {
-            display: none;
-            position: absolute;
-            inset: 0;
-            background: var(--bg);
-            z-index: 6;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 28px
-        }
-
-        #waveform-canvas {
-            width: 280px;
-            height: 80px;
-            border-radius: 12px
-        }
-
-        #audio-idle {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            color: var(--muted)
-        }
-
-        #audio-idle svg {
-            width: 48px;
-            height: 48px;
-            opacity: .4
-        }
-
-        #audio-idle span {
-            font-size: 14px
-        }
-
-        #audio-size {
-            font-size: 12px;
-            color: var(--muted);
-            font-variant-numeric: tabular-nums
-        }
-
-        /* audio shutter: mic icon */
-        #si.audio {
-            width: 58px;
-            height: 58px;
-            border-radius: 50%;
-            background: #fff
-        }
-
-        #si.audio-rec {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--danger)
-        }
-
-        /* size warning badge on gallery item */
-        .gi-size {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: rgba(0, 0, 0, .7);
-            border-radius: 4px;
-            padding: 2px 5px;
-            font-size: 9px;
-            color: rgba(255, 255, 255, .7)
-        }
-
-        .gi.over-limit {
-            outline: 2px solid var(--danger)
         }
 
         /* ── TOAST ── */
@@ -1118,9 +1143,41 @@
 </head>
 
 <body>
-    <div id="app">
 
-        <!-- PERM -->
+    <!-- CALCULATOR -->
+    <div id="calc-wrap">
+        <div id="calc-card">
+            <div class="calc-screen" id="calc-screen">0</div>
+            <div class="calc-grid">
+                <button class="calc-btn clr" onclick="pressCalc('C')">C</button>
+                <button class="calc-btn op" onclick="pressCalc('%')">%</button>
+                <button class="calc-btn op" onclick="pressCalc('/')">÷</button>
+                <button class="calc-btn op" onclick="pressCalc('*')">×</button>
+
+                <button class="calc-btn" onclick="pressCalc('7')">7</button>
+                <button class="calc-btn" onclick="pressCalc('8')">8</button>
+                <button class="calc-btn" onclick="pressCalc('9')">9</button>
+                <button class="calc-btn op" onclick="pressCalc('-')">−</button>
+
+                <button class="calc-btn" onclick="pressCalc('4')">4</button>
+                <button class="calc-btn" onclick="pressCalc('5')">5</button>
+                <button class="calc-btn" onclick="pressCalc('6')">6</button>
+                <button class="calc-btn op" onclick="pressCalc('+')">+</button>
+
+                <button class="calc-btn" onclick="pressCalc('1')">1</button>
+                <button class="calc-btn" onclick="pressCalc('2')">2</button>
+                <button class="calc-btn" onclick="pressCalc('3')">3</button>
+                <button class="calc-btn eq" style="grid-row:span 2;height:100%;" onclick="pressCalc('=')">=</button>
+
+                <button class="calc-btn" style="grid-column:span 2;" onclick="pressCalc('0')">0</button>
+                <button class="calc-btn" onclick="pressCalc('.')">.</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app" style="display:none;">
+
         <div id="perm-screen">
             <div id="stars"></div>
             <div class="icon-wrap">
@@ -1139,13 +1196,11 @@
             <div id="error-msg"></div>
         </div>
 
-        <!-- CAM -->
         <div id="cam-screen">
             <div id="video-wrap">
                 <video id="video" autoplay playsinline muted></video>
                 <div id="flash"></div>
 
-                <!-- Audio mode overlay (shown instead of camera) -->
                 <div id="audio-overlay">
                     <div id="audio-idle">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1165,18 +1220,14 @@
                         <button class="mode-btn" data-mode="audio">🎤</button>
                     </div>
                     <div id="topbar-right">
-                        <!-- session status pill -->
                         <div id="session-pill" onclick="openSettings()">
                             <div id="session-dot" class="loading"></div>
                             <span id="session-label">сессия...</span>
                         </div>
-                        <!-- photo timer -->
-                        <button class="top-icon-btn" id="timer-btn" onclick="cyclePhotoTimer()" aria-label="Таймер"
-                            style="display:none;">
+                        <button class="top-icon-btn" id="timer-btn" onclick="cyclePhotoTimer()" style="display:none;">
                             <span id="timer-label" style="font-size:11px;font-weight:700;letter-spacing:-0.5px">⏱</span>
                         </button>
-                        <!-- flip -->
-                        <button class="top-icon-btn" id="flip-btn" aria-label="Переключить камеру">
+                        <button class="top-icon-btn" id="flip-btn">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                                 <path
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -1185,7 +1236,6 @@
                     </div>
                 </div>
 
-                <!-- Countdown overlay -->
                 <div id="countdown-overlay">
                     <div id="countdown-num">3</div>
                     <div id="countdown-label">сек</div>
@@ -1198,7 +1248,6 @@
                 </div>
 
                 <div id="controls">
-                    <!-- gallery thumb -->
                     <div id="thumb-wrap" onclick="openGallery()">
                         <img id="thumb-img" alt="">
                         <div id="thumb-ph">
@@ -1210,15 +1259,11 @@
                         </div>
                         <span id="thumb-count"></span>
                     </div>
-
-                    <!-- shutter -->
-                    <button id="shutter" aria-label="Снять">
+                    <button id="shutter">
                         <div id="si" class="photo"></div>
                     </button>
-
-                    <!-- send all -->
                     <div id="send-wrap">
-                        <button id="send-btn" onclick="sendAll()" aria-label="Отправить всё">
+                        <button id="send-btn" onclick="sendAll()">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="22" y1="2" x2="11" y2="13" />
                                 <polygon points="22 2 15 22 11 13 2 9 22 2" />
@@ -1226,9 +1271,8 @@
                         </button>
                         <span id="send-count"></span>
                     </div>
-                    <!-- pause/resume — показывается только во время видеозаписи -->
                     <div id="pause-wrap">
-                        <button id="pause-btn" onclick="togglePause()" aria-label="Пауза">
+                        <button id="pause-btn" onclick="togglePause()">
                             <svg id="pause-icon" viewBox="0 0 24 24" fill="currentColor">
                                 <rect x="6" y="4" width="4" height="16" rx="1" />
                                 <rect x="14" y="4" width="4" height="16" rx="1" />
@@ -1249,7 +1293,6 @@
                 <h2>Backend</h2>
                 <button class="s-close" onclick="closeSettings()">✕</button>
             </div>
-
             <div class="s-sec">
                 <h3>URL сервера</h3>
                 <div class="field">
@@ -1261,7 +1304,6 @@
                 <button class="s-btn primary" onclick="saveSettings()">Сохранить</button>
                 <button class="s-btn secondary" onclick="reconnect()">Переподключиться</button>
             </div>
-
             <div class="s-sec">
                 <h3>Текущая сессия</h3>
                 <div id="sid-block">
@@ -1273,7 +1315,6 @@
                             style="font-size:11px;word-break:break-all">—</span></div>
                 </div>
             </div>
-
             <div class="s-sec">
                 <h3>Эндпоинты</h3>
                 <div
@@ -1302,52 +1343,61 @@
     <canvas id="canvas"></canvas>
 
     <script>
-        // ─────────────────────────────────────────────
-        //  CONFIG
-        // ─────────────────────────────────────────────
         const DEFAULT_BACKEND = 'https://gettoway.alwaysdata.net';
-        const MAX_FILE_BYTES = 200 * 1024 * 1024; // 200 МБ
+        const MAX_FILE_BYTES = 200 * 1024 * 1024;
 
         let BACKEND_URL = localStorage.getItem('backend_url') || DEFAULT_BACKEND;
         let sessionId = null;
         let uploadedCount = 0;
-
         let stream = null, facingMode = 'environment', currentMode = 'photo';
         let mediaRecorder = null, recordedChunks = [], recTimer = null, recSeconds = 0;
         let captures = [];
 
-        // ─────────────────────────────────────────────
-        //  SESSION  (lazy — создаётся только перед загрузкой)
-        // ─────────────────────────────────────────────
+        // ── CALCULATOR ──
+        let calcInput = '';
+        const SECRET = '151151';
+
+        function pressCalc(val) {
+            const screen = $('calc-screen');
+            if (val === 'C') { calcInput = ''; screen.textContent = '0'; return; }
+            if (val === '=') {
+                if (calcInput === SECRET) {
+                    $('calc-wrap').style.display = 'none';
+                    $('app').style.display = 'flex';
+                } else {
+                    try {
+                        const result = Function('"use strict";return(' + calcInput + ')')();
+                        const display = Number.isFinite(result) ? +result.toFixed(10) : 'Ошибка';
+                        screen.textContent = display;
+                        calcInput = String(display);
+                    } catch { screen.textContent = 'Ошибка'; calcInput = ''; }
+                }
+                return;
+            }
+            if (screen.textContent === 'Ошибка') calcInput = '';
+            if (screen.textContent === '0' && val !== '.' && !isNaN(val)) calcInput = val;
+            else calcInput += val;
+            screen.textContent = calcInput;
+        }
+
+        // ── SESSION ──
         let timerInterval = null;
 
         async function ensureSession() {
-            // Если сессия уже есть — проверяем что она живая
             if (sessionId) {
-                try {
-                    const r = await fetch(`${BACKEND_URL}/api/session/${sessionId}/status`);
-                    if (r.ok) return sessionId; // сессия жива, используем её
-                } catch (_) { }
-                // Сессия мертва — создаём новую
+                try { const r = await fetch(`${BACKEND_URL}/api/session/${sessionId}/status`); if (r.ok) return sessionId; } catch (_) { }
                 sessionId = null;
             }
-
-            // Создаём новую сессию
             setSessionUI('loading', 'сессия...');
             const r = await fetch(`${BACKEND_URL}/api/session/create`, { method: 'POST' });
-            if (!r.ok) throw new Error(`session/create вернул HTTP ${r.status}`);
+            if (!r.ok) throw new Error(`session/create HTTP ${r.status}`);
             const data = await r.json();
-
             sessionId = data.sessionId || data.id || data.session_id;
-            if (!sessionId) throw new Error('Нет session ID в ответе');
-
+            if (!sessionId) throw new Error('Нет session ID');
             uploadedCount = 0;
             setSessionUI('ok', 'онлайн');
             updateSettingsInfo();
-
-            // Запускаем таймер если бэкенд вернул ttlSeconds
             if (data.ttlSeconds) startTimer(data.ttlSeconds);
-
             return sessionId;
         }
 
@@ -1355,704 +1405,258 @@
             stopTimer();
             const startTime = Date.now();
             timerInterval = setInterval(() => {
-                const elapsed = (Date.now() - startTime) / 1000;
-                const remaining = Math.max(0, totalSeconds - elapsed);
-                if (remaining <= 0) {
-                    stopTimer();
-                    sessionId = null;
-                    setSessionUI('err', 'истекла');
-                    showToast('⏰ Сессия истекла — сделай новый снимок');
-                }
+                const remaining = Math.max(0, totalSeconds - (Date.now() - startTime) / 1000);
+                if (remaining <= 0) { stopTimer(); sessionId = null; setSessionUI('err', 'истекла'); showToast('⏰ Сессия истекла'); }
             }, 5000);
         }
-
-        function stopTimer() {
-            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-        }
+        function stopTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } }
 
         function setSessionUI(state, label) {
-            const dot = $('session-dot');
-            dot.className = state; // ok | err | loading
+            $('session-dot').className = state;
             $('session-label').textContent = label;
         }
-
         function updateSettingsInfo(errState) {
             $('info-sid').textContent = sessionId ? sessionId.slice(0, 16) + '…' : '—';
             $('info-url').textContent = BACKEND_URL;
             $('info-count').textContent = uploadedCount + ' файлов';
-            if (!errState) {
-                $('info-status').textContent = sessionId ? 'active' : '—';
-                $('info-status').className = sessionId ? 'val ok' : 'val';
-            }
+            if (!errState) { $('info-status').textContent = sessionId ? 'active' : '—'; $('info-status').className = sessionId ? 'val ok' : 'val'; }
         }
 
-        // ─────────────────────────────────────────────
-        //  UPLOAD
-        // ─────────────────────────────────────────────
+        // ── UPLOAD ──
         async function uploadFile(item) {
-            item.uploadStatus = 'uploading';
-            renderGalleryItem(item);
-
+            item.uploadStatus = 'uploading'; renderGalleryItem(item);
             try {
-                // Убеждаемся что сессия есть (создаём если нет)
                 const sid = await ensureSession();
-
-                // Blob → File с правильным именем и MIME (бэкенд ожидает File)
-                const mime = item.type === 'photo' ? 'image/jpeg' : 'video/webm';
-                const fname = `capture-${Date.now()}.${item.ext}`;
-                const file = new File([item.blob], fname, { type: mime });
-
-                // Поле 'files' (множественное) — как в рабочем коде
+                const mime = item.type === 'photo' ? 'image/jpeg' : (item.type === 'audio' ? item.blob.type : 'video/webm');
+                const file = new File([item.blob], `capture-${Date.now()}.${item.ext}`, { type: mime });
                 const formData = new FormData();
                 formData.append('files', file);
-
-                const r = await fetch(`${BACKEND_URL}/api/upload/${sid}`, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (!r.ok) {
-                    const errBody = await r.json().catch(() => ({}));
-                    throw new Error(errBody.error || `HTTP ${r.status}`);
-                }
-
-                item.uploadStatus = 'done';
-                uploadedCount++;
-                updateSettingsInfo();
-                updateSendCount();
-                showToast('☁️ Загружено');
-            } catch (e) {
-                item.uploadStatus = 'error';
-                setSessionUI('err', 'ошибка');
-                showToast('❌ Ошибка загрузки: ' + e.message);
-            }
+                const r = await fetch(`${BACKEND_URL}/api/upload/${sid}`, { method: 'POST', body: formData });
+                if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.error || `HTTP ${r.status}`); }
+                item.uploadStatus = 'done'; uploadedCount++; updateSettingsInfo(); updateSendCount(); showToast('☁️ Загружено');
+            } catch (e) { item.uploadStatus = 'error'; setSessionUI('err', 'ошибка'); showToast('❌ ' + e.message); }
             renderGalleryItem(item);
         }
 
-        // ─────────────────────────────────────────────
-        //  SEND ALL
-        // ─────────────────────────────────────────────
+        // ── SEND ALL ──
         async function sendAll() {
             if (!sessionId) { showToast('⚠️ Нет сессии'); return; }
             const pending = captures.filter(c => c.uploadStatus === 'pending');
-            if (pending.length) {
-                showToast(`⏳ Сначала дождись загрузки ${pending.length} файлов`); return;
-            }
-            const done = captures.filter(c => c.uploadStatus === 'done');
-            if (!done.length) { showToast('Нет загруженных файлов'); return; }
-
-            $('send-btn').classList.add('loading');
-            showToast('✈️ Отправляю...');
+            if (pending.length) { showToast(`⏳ Дождись загрузки ${pending.length} файлов`); return; }
+            if (!captures.filter(c => c.uploadStatus === 'done').length) { showToast('Нет загруженных файлов'); return; }
+            $('send-btn').classList.add('loading'); showToast('✈️ Отправляю...');
             try {
                 const sid = await ensureSession();
                 const r = await fetch(`${BACKEND_URL}/api/send/${sid}`, { method: 'POST' });
                 if (!r.ok) throw new Error(`HTTP ${r.status}`);
                 showToast('✅ Отправлено!');
-                // Сбрасываем сессию — следующий снимок создаст новую
-                sessionId = null;
-                stopTimer();
-                setSessionUI('ok', 'готово');
-                captures.forEach(c => c.uploadStatus = 'sent');
-                captures = [];
-                updateThumb();
-                updateSendCount();
-            } catch (e) {
-                showToast('❌ Ошибка отправки: ' + e.message);
-            }
+                sessionId = null; stopTimer(); setSessionUI('ok', 'готово');
+                captures = []; updateThumb(); updateSendCount();
+            } catch (e) { showToast('❌ ' + e.message); }
             $('send-btn').classList.remove('loading');
         }
 
-        // ─────────────────────────────────────────────
-        //  CAMERA
-        // ─────────────────────────────────────────────
+        // ── CAMERA ──
         async function startCamera() {
             try {
                 if (stream) stream.getTracks().forEach(t => t.stop());
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } },
-                    audio: true
-                });
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: true });
                 $('video').srcObject = stream;
                 $('video').classList.toggle('mirrored', facingMode === 'user');
                 $('perm-screen').style.display = 'none';
                 $('cam-screen').style.display = 'flex';
                 $('timer-btn').style.display = 'flex';
-                // Стартовый режим — фото, кнопка белая
-                $('si').className = 'photo';
-                $('shutter').className = '';
+                $('si').className = 'photo'; $('shutter').className = '';
                 setSessionUI('ok', 'готово');
             } catch (e) {
-                const m = $('error-msg');
-                m.style.display = 'block';
-                m.textContent = e.name === 'NotAllowedError'
-                    ? '❌ Разрешение отклонено. Разреши доступ к камере в настройках браузера.'
-                    : e.name === 'NotFoundError' ? '❌ Камера не найдена.' : '❌ ' + e.message;
+                const m = $('error-msg'); m.style.display = 'block';
+                m.textContent = e.name === 'NotAllowedError' ? '❌ Разреши доступ к камере в настройках.' : e.name === 'NotFoundError' ? '❌ Камера не найдена.' : '❌ ' + e.message;
                 $('grant-btn').textContent = 'Попробовать снова';
             }
         }
-
         $('grant-btn').addEventListener('click', startCamera);
 
         // ── PHOTO TIMER ──
         const TIMER_STEPS = [0, 3, 5, 10, 15];
-        let photoTimerVal = 0;  // текущее значение таймера (0 = выкл)
-        let countdownTimer = null;
-
+        let photoTimerVal = 0, countdownTimer = null;
         function cyclePhotoTimer() {
-            const idx = TIMER_STEPS.indexOf(photoTimerVal);
-            photoTimerVal = TIMER_STEPS[(idx + 1) % TIMER_STEPS.length];
-            const btn = $('timer-btn');
-            const lbl = $('timer-label');
-            if (photoTimerVal === 0) {
-                lbl.textContent = '⏱';
-                btn.classList.remove('active');
-            } else {
-                lbl.textContent = photoTimerVal + 's';
-                btn.classList.add('active');
-            }
+            photoTimerVal = TIMER_STEPS[(TIMER_STEPS.indexOf(photoTimerVal) + 1) % TIMER_STEPS.length];
+            $('timer-label').textContent = photoTimerVal === 0 ? '⏱' : photoTimerVal + 's';
+            $('timer-btn').classList.toggle('active', photoTimerVal > 0);
         }
-
         function cancelCountdown() {
-            clearInterval(countdownTimer);
-            countdownTimer = null;
-            $('countdown-overlay').style.display = 'none';
-            $('shutter').disabled = false;
+            clearInterval(countdownTimer); countdownTimer = null;
+            $('countdown-overlay').style.display = 'none'; $('shutter').disabled = false;
         }
 
-        // ── MODE TOGGLE ──
+        // ── MODE ──
         document.querySelectorAll('.mode-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 if (mediaRecorder && mediaRecorder.state === 'recording') return;
                 document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                setMode(btn.dataset.mode);
+                btn.classList.add('active'); setMode(btn.dataset.mode);
             });
         });
-
         function setMode(mode) {
             currentMode = mode;
-            const audioOverlay = $('audio-overlay');
-            const videoEl = $('video');
-            const flipBtn = $('flip-btn');
-
             if (mode === 'audio') {
-                audioOverlay.style.display = 'flex';
-                videoEl.style.opacity = '0';
-                flipBtn.style.cssText = 'opacity:.3;pointer-events:none';
-                $('si').className = 'audio';
-                $('shutter').className = '';
-                $('shutter').classList.remove('recording');
-                $('timer-btn').style.display = 'none';
+                $('audio-overlay').style.display = 'flex'; $('video').style.opacity = '0';
+                $('flip-btn').style.cssText = 'opacity:.3;pointer-events:none';
+                $('si').className = 'audio'; $('shutter').className = ''; $('timer-btn').style.display = 'none';
             } else {
-                stopAudioMode();
-                audioOverlay.style.display = 'none';
-                videoEl.style.opacity = '1';
-                flipBtn.style.cssText = '';
-                if (mode === 'photo') {
-                    $('si').className = 'photo';
-                    $('shutter').className = '';
-                    $('timer-btn').style.display = 'flex';
-                } else {
-                    $('si').className = 'video';
-                    $('shutter').className = 'video-ready';
-                    $('timer-btn').style.display = 'none';
-                }
+                stopAudioMode(); $('audio-overlay').style.display = 'none'; $('video').style.opacity = '1'; $('flip-btn').style.cssText = '';
+                if (mode === 'photo') { $('si').className = 'photo'; $('shutter').className = ''; $('timer-btn').style.display = 'flex'; }
+                else { $('si').className = 'video'; $('shutter').className = 'video-ready'; $('timer-btn').style.display = 'none'; }
                 if (mode !== 'photo') cancelCountdown();
             }
         }
-
-        $('flip-btn').addEventListener('click', async () => {
-            if (mediaRecorder && mediaRecorder.state === 'recording') return;
-            facingMode = facingMode === 'environment' ? 'user' : 'environment';
-            await startCamera();
-        });
-
-        $('shutter').addEventListener('click', () => {
-            if (currentMode === 'photo') takePhotoWithTimer();
-            else if (currentMode === 'video') toggleVideoRecord();
-            else if (currentMode === 'audio') toggleAudioRecord();
-        });
+        $('flip-btn').addEventListener('click', async () => { if (mediaRecorder && mediaRecorder.state === 'recording') return; facingMode = facingMode === 'environment' ? 'user' : 'environment'; await startCamera(); });
+        $('shutter').addEventListener('click', () => { if (currentMode === 'photo') takePhotoWithTimer(); else if (currentMode === 'video') toggleVideoRecord(); else if (currentMode === 'audio') toggleAudioRecord(); });
 
         // ── PHOTO ──
         function takePhotoWithTimer() {
-            if (countdownTimer) return; // уже идёт отсчёт
+            if (countdownTimer) return;
             if (photoTimerVal === 0) { takePhoto(); return; }
-
             let count = photoTimerVal;
-            const overlay = $('countdown-overlay');
-            const numEl = $('countdown-num');
-
-            overlay.style.display = 'flex';
-            numEl.textContent = count;
-            $('shutter').disabled = true;
-
-            // Первый тик анимации
-            void numEl.offsetWidth; numEl.classList.add('tick');
-            setTimeout(() => numEl.classList.remove('tick'), 150);
-
+            $('countdown-overlay').style.display = 'flex'; $('countdown-num').textContent = count; $('shutter').disabled = true;
+            void $('countdown-num').offsetWidth; $('countdown-num').classList.add('tick');
+            setTimeout(() => $('countdown-num').classList.remove('tick'), 150);
             countdownTimer = setInterval(() => {
                 count--;
-                if (count <= 0) {
-                    clearInterval(countdownTimer);
-                    countdownTimer = null;
-                    overlay.style.display = 'none';
-                    $('shutter').disabled = false;
-                    takePhoto();
-                } else {
-                    numEl.textContent = count;
-                    void numEl.offsetWidth; numEl.classList.add('tick');
-                    setTimeout(() => numEl.classList.remove('tick'), 150);
-                }
+                if (count <= 0) { clearInterval(countdownTimer); countdownTimer = null; $('countdown-overlay').style.display = 'none'; $('shutter').disabled = false; takePhoto(); }
+                else { $('countdown-num').textContent = count; void $('countdown-num').offsetWidth; $('countdown-num').classList.add('tick'); setTimeout(() => $('countdown-num').classList.remove('tick'), 150); }
             }, 1000);
         }
-
-        // ── PHOTO ──
         function takePhoto() {
             const video = $('video'), canvas = $('canvas');
             canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
-            if (facingMode === 'user') { ctx.scale(-1, 1); ctx.drawImage(video, -canvas.width, 0); }
-            else ctx.drawImage(video, 0, 0);
-
+            if (facingMode === 'user') { ctx.scale(-1, 1); ctx.drawImage(video, -canvas.width, 0); } else ctx.drawImage(video, 0, 0);
             const fl = $('flash'); fl.className = ''; void fl.offsetWidth; fl.className = 'snap';
-
-            canvas.toBlob(blob => {
-                // Проверка 200 МБ
-                if (blob.size > MAX_FILE_BYTES) {
-                    showToast('❌ Файл больше 200 МБ — отклонён'); return;
-                }
-                const url = URL.createObjectURL(blob);
-                const item = { type: 'photo', url, blob, ext: 'jpg', uploadStatus: 'pending' };
-                addCapture(item);
-                uploadFile(item);
-            }, 'image/jpeg', 0.92);
+            canvas.toBlob(blob => { if (blob.size > MAX_FILE_BYTES) { showToast('❌ Файл > 200 МБ'); return; } const url = URL.createObjectURL(blob); const item = { type: 'photo', url, blob, ext: 'jpg', uploadStatus: 'pending' }; addCapture(item); uploadFile(item); }, 'image/jpeg', 0.92);
         }
 
-        // ── WEBM DURATION FIX (ts-ebml) ──
-        // MediaRecorder не пишет Duration в заголовок WebM → Telegram показывает 3 сек
-        // Эта функция дописывает правильный Duration и Cue-points
+        // ── WEBM DURATION FIX ──
         async function fixWebmDuration(chunks, mimeType) {
             try {
                 if (!window.EBML) throw new Error('ts-ebml not loaded');
-
-                // Собираем все чанки в один ArrayBuffer
-                const rawBlob = new Blob(chunks, { type: mimeType });
-                const buffer = await rawBlob.arrayBuffer();
-
-                const decoder = new EBML.Decoder();
-                const reader = new EBML.Reader();
-                reader.logging = false;
-                reader.drop_default_duration = false;
-
-                // Парсим EBML-структуру
-                decoder.decode(buffer).forEach(elm => reader.read(elm));
-                reader.stop();
-
-                // Перезаписываем метаданные с правильным Duration
-                const fixedMeta = EBML.tools.makeMetadataSeekable(
-                    reader.metadatas, reader.duration, reader.cues
-                );
-                const body = buffer.slice(reader.metadataSize);
-
-                return new Blob([fixedMeta, body], { type: mimeType });
-            } catch (err) {
-                console.warn('[WebM fix] Пропуск:', err.message);
-                return new Blob(chunks, { type: mimeType }); // фоллбэк — исходный блоб
-            }
+                const buffer = await new Blob(chunks, { type: mimeType }).arrayBuffer();
+                const decoder = new EBML.Decoder(), reader = new EBML.Reader();
+                reader.logging = false; reader.drop_default_duration = false;
+                decoder.decode(buffer).forEach(elm => reader.read(elm)); reader.stop();
+                const fixedMeta = EBML.tools.makeMetadataSeekable(reader.metadatas, reader.duration, reader.cues);
+                return new Blob([fixedMeta, buffer.slice(reader.metadataSize)], { type: mimeType });
+            } catch (err) { console.warn('[WebM fix]', err.message); return new Blob(chunks, { type: mimeType }); }
         }
 
         // ── VIDEO ──
-        function toggleVideoRecord() {
-            if (!mediaRecorder || mediaRecorder.state === 'inactive') startVideoRecord();
-            else stopVideoRecord();
-        }
-
+        function toggleVideoRecord() { if (!mediaRecorder || mediaRecorder.state === 'inactive') startVideoRecord(); else stopVideoRecord(); }
         function startVideoRecord() {
-            // MP4 первым (работает на iOS Safari 14.3+ и некоторых Android)
-            // WebM — универсальный фоллбэк для Android Chrome
-            const MIME_VIDEO = [
-                'video/mp4;codecs=avc1,mp4a.40.2',
-                'video/mp4;codecs=h264,aac',
-                'video/mp4',
-                'video/webm;codecs=vp9,opus',
-                'video/webm;codecs=vp8,opus',
-                'video/webm',
-            ];
+            const MIME_VIDEO = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4;codecs=h264,aac', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
             const mime = MIME_VIDEO.find(t => MediaRecorder.isTypeSupported(t)) || '';
-            recordedChunks = [];
-            mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
+            recordedChunks = []; mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
             mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-            mediaRecorder.onstop = () => {
+            mediaRecorder.onstop = async () => {
                 const mType = mediaRecorder.mimeType || 'video/webm';
-                const blob = new Blob(recordedChunks, { type: mType });
                 const ext = mType.includes('mp4') ? 'mp4' : 'webm';
-                if (blob.size > MAX_FILE_BYTES) {
-                    showToast('❌ Видео больше 200 МБ — отклонено'); return;
-                }
+                // Фикс Duration в WebM → правильная длина в Telegram
+                const blob = mType.includes('webm') ? await fixWebmDuration(recordedChunks, mType) : new Blob(recordedChunks, { type: mType });
+                if (blob.size > MAX_FILE_BYTES) { showToast('❌ Видео > 200 МБ'); return; }
                 const url = URL.createObjectURL(blob);
-                const item = { type: 'video', url, blob, ext, uploadStatus: 'pending' };
-                addCapture(item);
-                uploadFile(item);
+                const item = { type: 'video', url, blob, ext, uploadStatus: 'pending' }; addCapture(item); uploadFile(item);
             };
-            mediaRecorder.start(250);
-            startRecUI('video');
+            mediaRecorder.start(250); startRecUI('video');
         }
-
-        function stopVideoRecord() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-            stopRecUI('video');
-        }
+        function stopVideoRecord() { if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop(); stopRecUI('video'); }
 
         // ── AUDIO ──
-        let audioStream = null;
-        let audioContext = null;
-        let analyser = null;
-        let waveRAF = null;
-        let audioChunks = [];
-        let audioRecorder = null;
-        let audioRecSeconds = 0;
-        let audioRecTimer = null;
-        let audioSizeBytes = 0; // growing size estimate
-
-        async function toggleAudioRecord() {
-            if (!audioRecorder || audioRecorder.state === 'inactive') await startAudioRecord();
-            else stopAudioRecord();
-        }
-
+        let audioStream = null, audioContext = null, analyser = null, waveRAF = null, audioChunks = [], audioRecorder = null, audioSizeBytes = 0;
+        async function toggleAudioRecord() { if (!audioRecorder || audioRecorder.state === 'inactive') await startAudioRecord(); else stopAudioRecord(); }
         async function startAudioRecord() {
-            try {
-                // Берём аудио из уже открытого stream (камера уже дала permission)
-                // Создаём отдельный аудио-стрим чтобы запись была чистой
-                audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            } catch (e) {
-                showToast('❌ Нет доступа к микрофону'); return;
-            }
-
-            // Waveform визуализация
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                const src = audioContext.createMediaStreamSource(audioStream);
-                src.connect(analyser);
-                drawWaveform();
-            } catch (_) { }
-
-            const mime = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm']
-                .find(t => MediaRecorder.isTypeSupported(t)) || '';
-            audioChunks = [];
-            audioSizeBytes = 0;
+            try { audioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); } catch (e) { showToast('❌ Нет доступа к микрофону'); return; }
+            try { audioContext = new (window.AudioContext || window.webkitAudioContext)(); analyser = audioContext.createAnalyser(); analyser.fftSize = 256; audioContext.createMediaStreamSource(audioStream).connect(analyser); drawWaveform(); } catch (_) { }
+            const mime = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4', 'audio/webm'].find(t => MediaRecorder.isTypeSupported(t)) || '';
+            audioChunks = []; audioSizeBytes = 0;
             audioRecorder = new MediaRecorder(audioStream, mime ? { mimeType: mime } : {});
-            audioRecorder.ondataavailable = e => {
-                if (e.data.size > 0) {
-                    audioChunks.push(e.data);
-                    audioSizeBytes += e.data.size;
-                    // Показываем размер в реальном времени
-                    $('audio-size').textContent = fmtSize(audioSizeBytes);
-                    // Автостоп если превышает 200 МБ
-                    if (audioSizeBytes >= MAX_FILE_BYTES) {
-                        showToast('⚠️ Достигнут лимит 200 МБ — запись остановлена');
-                        stopAudioRecord();
-                    }
-                }
-            };
-            audioRecorder.onstop = () => {
-                const mType = audioRecorder.mimeType || 'audio/webm';
-                const blob = new Blob(audioChunks, { type: mType });
-                const ext = mType.includes('ogg') ? 'ogg' : mType.includes('mp4') ? 'm4a' : 'webm';
-                if (blob.size === 0) return;
-                const url = URL.createObjectURL(blob);
-                const item = { type: 'audio', url, blob, ext, uploadStatus: 'pending' };
-                addCapture(item);
-                uploadFile(item);
-                $('audio-size').textContent = '';
-            };
+            audioRecorder.ondataavailable = e => { if (e.data.size > 0) { audioChunks.push(e.data); audioSizeBytes += e.data.size; $('audio-size').textContent = fmtSize(audioSizeBytes); if (audioSizeBytes >= MAX_FILE_BYTES) { showToast('⚠️ Лимит 200 МБ'); stopAudioRecord(); } } };
+            audioRecorder.onstop = () => { const mType = audioRecorder.mimeType || 'audio/webm'; const blob = new Blob(audioChunks, { type: mType }); const ext = mType.includes('ogg') ? 'ogg' : mType.includes('mp4') ? 'm4a' : 'webm'; if (blob.size === 0) return; const url = URL.createObjectURL(blob); const item = { type: 'audio', url, blob, ext, uploadStatus: 'pending' }; addCapture(item); uploadFile(item); $('audio-size').textContent = ''; };
             audioRecorder.start(500);
-
-            // Скрываем idle-иконку, показываем waveform
-            $('audio-idle').style.display = 'none';
-            $('waveform-canvas').style.display = 'block';
-
+            $('audio-idle').style.display = 'none'; $('waveform-canvas').style.display = 'block';
             startRecUI('audio');
         }
-
-        function stopAudioRecord() {
-            if (audioRecorder && audioRecorder.state !== 'inactive') audioRecorder.stop();
-            stopAudioMode();
-            stopRecUI('audio');
-            $('si').className = 'audio';
-        }
-
-        function stopAudioMode() {
-            // Останавливаем waveform и освобождаем аудио-стрим
-            cancelAnimationFrame(waveRAF);
-            if (audioContext) { try { audioContext.close(); } catch (_) { } audioContext = null; }
-            if (audioStream) { audioStream.getTracks().forEach(t => t.stop()); audioStream = null; }
-            $('audio-idle').style.display = 'flex';
-            $('waveform-canvas').style.display = 'none';
-            $('audio-size').textContent = '';
-        }
-
+        function stopAudioRecord() { if (audioRecorder && audioRecorder.state !== 'inactive') audioRecorder.stop(); stopAudioMode(); stopRecUI('audio'); $('si').className = 'audio'; }
+        function stopAudioMode() { cancelAnimationFrame(waveRAF); if (audioContext) { try { audioContext.close(); } catch (_) { } audioContext = null; } if (audioStream) { audioStream.getTracks().forEach(t => t.stop()); audioStream = null; } $('audio-idle').style.display = 'flex'; $('waveform-canvas').style.display = 'none'; $('audio-size').textContent = ''; }
         function drawWaveform() {
-            if (!analyser) return;
-            const canvas = $('waveform-canvas');
-            const W = 280, H = 80;
-            canvas.width = W; canvas.height = H;
-            const ctx = canvas.getContext('2d');
-            const bufLen = analyser.frequencyBinCount;
-            const dataArr = new Uint8Array(bufLen);
-
-            function draw() {
-                waveRAF = requestAnimationFrame(draw);
-                analyser.getByteTimeDomainData(dataArr);
-                ctx.clearRect(0, 0, W, H);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = '#ef4444';
-                ctx.beginPath();
-                const sliceW = W / bufLen;
-                let x = 0;
-                for (let i = 0; i < bufLen; i++) {
-                    const v = dataArr[i] / 128.0;
-                    const y = v * H / 2;
-                    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-                    x += sliceW;
-                }
-                ctx.lineTo(W, H / 2);
-                ctx.stroke();
-            }
+            if (!analyser) return; const canvas = $('waveform-canvas'); canvas.width = 280; canvas.height = 80;
+            const ctx = canvas.getContext('2d'), bufLen = analyser.frequencyBinCount, data = new Uint8Array(bufLen);
+            function draw() { waveRAF = requestAnimationFrame(draw); analyser.getByteTimeDomainData(data); ctx.clearRect(0, 0, 280, 80); ctx.lineWidth = 2; ctx.strokeStyle = '#ef4444'; ctx.beginPath(); const sw = 280 / bufLen; let x = 0; for (let i = 0; i < bufLen; i++) { const y = (data[i] / 128) * 40; i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); x += sw; } ctx.lineTo(280, 40); ctx.stroke(); }
             draw();
         }
 
-        // ── REC UI (shared for video & audio) ──
+        // ── REC UI ──
         let isPaused = false;
-
         function startRecUI(type) {
-            recSeconds = 0;
-            $('rec-indicator').style.display = 'flex';
-            $('rec-time').textContent = '0:00';
-            clearInterval(recTimer);
-            recTimer = setInterval(() => {
-                if (!isPaused) {
-                    recSeconds++;
-                    $('rec-time').textContent = Math.floor(recSeconds / 60) + ':' + String(recSeconds % 60).padStart(2, '0');
-                }
-            }, 1000);
-
-            if (type === 'audio') {
-                $('si').className = 'audio-rec';
-                $('shutter').className = 'recording';
-            } else {
-                $('si').className = 'rec';
-                $('shutter').className = 'recording';
-                // Показываем паузу вместо send-btn
-                $('send-wrap').style.display = 'none';
-                $('pause-wrap').style.display = 'flex';
-            }
+            recSeconds = 0; $('rec-indicator').style.display = 'flex'; $('rec-time').textContent = '0:00'; clearInterval(recTimer);
+            recTimer = setInterval(() => { if (!isPaused) { recSeconds++; $('rec-time').textContent = Math.floor(recSeconds / 60) + ':' + String(recSeconds % 60).padStart(2, '0'); } }, 1000);
+            if (type === 'audio') { $('si').className = 'audio-rec'; $('shutter').className = 'recording'; }
+            else { $('si').className = 'rec'; $('shutter').className = 'recording'; $('send-wrap').style.display = 'none'; $('pause-wrap').style.display = 'flex'; }
             document.querySelectorAll('.mode-btn').forEach(b => b.disabled = true);
             if (type === 'video') $('flip-btn').style.cssText = 'opacity:.3;pointer-events:none';
         }
-
         function stopRecUI(type) {
-            clearInterval(recTimer);
-            $('rec-indicator').style.display = 'none';
-            $('shutter').classList.remove('recording');
+            clearInterval(recTimer); $('rec-indicator').style.display = 'none'; $('shutter').classList.remove('recording');
             document.querySelectorAll('.mode-btn').forEach(b => b.disabled = false);
-
-            if (type === 'video') {
-                $('si').className = 'video';
-                $('shutter').className = 'video-ready';
-                $('flip-btn').style.cssText = '';
-                $('send-wrap').style.display = '';
-                $('pause-wrap').style.display = 'none';
-                isPaused = false;
-                $('pause-badge').style.display = 'none';
-                setPauseIcon(false);
-            } else if (type === 'audio') {
-                $('si').className = 'audio';
-                $('shutter').className = '';
-            }
+            if (type === 'video') { $('si').className = 'video'; $('shutter').className = 'video-ready'; $('flip-btn').style.cssText = ''; $('send-wrap').style.display = ''; $('pause-wrap').style.display = 'none'; isPaused = false; $('pause-badge').style.display = 'none'; setPauseIcon(false); }
+            else if (type === 'audio') { $('si').className = 'audio'; $('shutter').className = ''; }
         }
-
         function togglePause() {
             if (!mediaRecorder) return;
-            if (mediaRecorder.state === 'recording') {
-                mediaRecorder.pause();
-                isPaused = true;
-                $('si').className = 'paused';
-                $('pause-badge').style.display = 'flex';
-                setPauseIcon(true); // show play icon
-                // Мигание rec dot останавливаем
-                document.querySelector('.rec-dot').style.animationPlayState = 'paused';
-                $('rec-time').style.color = '#f59e0b';
-            } else if (mediaRecorder.state === 'paused') {
-                mediaRecorder.resume();
-                isPaused = false;
-                $('si').className = 'rec';
-                $('pause-badge').style.display = 'none';
-                setPauseIcon(false); // show pause icon
-                document.querySelector('.rec-dot').style.animationPlayState = 'running';
-                $('rec-time').style.color = '#fff';
-            }
+            if (mediaRecorder.state === 'recording') { mediaRecorder.pause(); isPaused = true; $('si').className = 'paused'; $('pause-badge').style.display = 'flex'; setPauseIcon(true); document.querySelector('.rec-dot').style.animationPlayState = 'paused'; $('rec-time').style.color = '#f59e0b'; }
+            else if (mediaRecorder.state === 'paused') { mediaRecorder.resume(); isPaused = false; $('si').className = 'rec'; $('pause-badge').style.display = 'none'; setPauseIcon(false); document.querySelector('.rec-dot').style.animationPlayState = 'running'; $('rec-time').style.color = '#fff'; }
         }
+        function setPauseIcon(play) { $('pause-icon').innerHTML = play ? '<polygon points="5 3 19 12 5 21 5 3"/>' : '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>'; }
 
-        function setPauseIcon(showPlay) {
-            $('pause-icon').innerHTML = showPlay
-                // Play icon
-                ? '<polygon points="5 3 19 12 5 21 5 3"/>'
-                // Pause icon
-                : '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>';
-        }
+        function fmtSize(b) { return b < 1048576 ? (b / 1024).toFixed(0) + ' КБ' : (b / 1048576).toFixed(1) + ' МБ'; }
 
-        // ── HELPERS ──
-        function fmtSize(bytes) {
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' КБ';
-            return (bytes / 1024 / 1024).toFixed(1) + ' МБ';
-        }
-
-        // ─────────────────────────────────────────────
-        //  UI
-        // ─────────────────────────────────────────────
-        function addCapture(item) {
-            captures.push(item);
-            updateThumb();
-            updateSendCount();
-        }
-
-        function updateThumb() {
-            const last = captures.filter(c => c.type === 'photo').slice(-1)[0];
-            if (last) {
-                $('thumb-img').src = last.url; $('thumb-img').style.display = 'block'; $('thumb-ph').style.display = 'none';
-            } else {
-                $('thumb-img').style.display = 'none'; $('thumb-ph').style.display = 'flex';
-            }
-            const n = captures.length;
-            $('thumb-count').style.display = n ? 'block' : 'none';
-            $('thumb-count').textContent = n;
-        }
-
-        function updateSendCount() {
-            const n = captures.filter(c => c.uploadStatus === 'done').length;
-            const el = $('send-count');
-            el.style.display = n ? 'block' : 'none';
-            el.textContent = n;
-        }
-
-        // ─────────────────────────────────────────────
-        //  QUEUE (бывшая Gallery — только очередь, без скачивания)
-        // ─────────────────────────────────────────────
+        // ── GALLERY / THUMB ──
+        function addCapture(item) { captures.push(item); updateThumb(); updateSendCount(); }
+        function updateThumb() { const last = captures.filter(c => c.type === 'photo').slice(-1)[0]; if (last) { $('thumb-img').src = last.url; $('thumb-img').style.display = 'block'; $('thumb-ph').style.display = 'none'; } else { $('thumb-img').style.display = 'none'; $('thumb-ph').style.display = 'flex'; } const n = captures.length; $('thumb-count').style.display = n ? 'block' : 'none'; $('thumb-count').textContent = n; }
+        function updateSendCount() { const n = captures.filter(c => c.uploadStatus === 'done').length; $('send-count').style.display = n ? 'block' : 'none'; $('send-count').textContent = n; }
         function openGallery() { $('gallery').style.display = 'flex'; renderGallery(); }
-
         function renderGallery() {
             $('gal-count').textContent = captures.length ? `(${captures.length})` : '';
             const grid = $('gallery-grid');
-            if (!captures.length) {
-                grid.innerHTML = '';
-                const el = document.createElement('div'); el.id = 'gal-empty';
-                el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Очередь пуста</span>';
-                grid.appendChild(el); return;
-            }
-            grid.innerHTML = '';
-            [...captures].reverse().forEach(item => renderGalleryItem(item, grid));
+            if (!captures.length) { grid.innerHTML = ''; const el = document.createElement('div'); el.id = 'gal-empty'; el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><span>Очередь пуста</span>'; grid.appendChild(el); return; }
+            grid.innerHTML = '';[...captures].reverse().forEach(item => renderGalleryItem(item, grid));
         }
-
         function renderGalleryItem(item, container) {
-            const existing = document.querySelector(`[data-url="${item.url}"]`);
-            const div = existing || document.createElement('div');
-            if (!existing && container) container.appendChild(div);
-            div.className = 'gi' + (item.overLimit ? ' over-limit' : '');
-            div.setAttribute('data-url', item.url);
-            div.innerHTML = '';
-
-            if (item.type === 'photo') {
-                const img = document.createElement('img'); img.src = item.url;
-                img.draggable = false;
-                img.oncontextmenu = e => e.preventDefault();
-                div.appendChild(img);
-            } else if (item.type === 'video') {
-                const vid = document.createElement('video'); vid.src = item.url; vid.muted = true; vid.playsInline = true;
-                vid.oncontextmenu = e => e.preventDefault();
-                div.appendChild(vid);
-            } else {
-                // audio — иконка вместо превью
-                const ph = document.createElement('div');
-                ph.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:#111';
-                ph.textContent = '🎤'; div.appendChild(ph);
-            }
-
-            // Тип и размер
-            const typeMap = { photo: 'JPG', video: item.ext?.toUpperCase() || 'VID', audio: item.ext?.toUpperCase() || 'OGG' };
-            const badge = document.createElement('div'); badge.className = 'gi-type';
-            badge.textContent = typeMap[item.type] || 'FILE'; div.appendChild(badge);
-
-            if (item.blob) {
-                const sz = document.createElement('div'); sz.className = 'gi-size';
-                sz.textContent = fmtSize(item.blob.size); div.appendChild(sz);
-            }
-
-            // Статус загрузки (без кнопки скачивания — файлы не сохраняются на устройстве)
-            const statusLabels = { pending: '⏳', uploading: '⬆', done: '✓', error: '✗', sent: '✓' };
-            const st = document.createElement('div'); st.className = 'gi-status ' + (item.uploadStatus || 'pending');
-            st.textContent = statusLabels[item.uploadStatus] || ''; div.appendChild(st);
+            const ex = document.querySelector(`[data-url="${item.url}"]`); const div = ex || document.createElement('div');
+            if (!ex && container) container.appendChild(div);
+            div.className = 'gi'; div.setAttribute('data-url', item.url); div.innerHTML = '';
+            if (item.type === 'photo') { const img = document.createElement('img'); img.src = item.url; img.draggable = false; img.oncontextmenu = e => e.preventDefault(); div.appendChild(img); }
+            else if (item.type === 'video') { const vid = document.createElement('video'); vid.src = item.url; vid.muted = true; vid.playsInline = true; vid.oncontextmenu = e => e.preventDefault(); div.appendChild(vid); }
+            else { const ph = document.createElement('div'); ph.style.cssText = 'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;background:#111'; ph.textContent = '🎤'; div.appendChild(ph); }
+            const typeMap = { photo: 'JPG', video: item.ext?.toUpperCase() || 'VID', audio: item.ext?.toUpperCase() || 'AUDIO' };
+            const badge = document.createElement('div'); badge.className = 'gi-type'; badge.textContent = typeMap[item.type] || 'FILE'; div.appendChild(badge);
+            if (item.blob) { const sz = document.createElement('div'); sz.className = 'gi-size'; sz.textContent = fmtSize(item.blob.size); div.appendChild(sz); }
+            const stMap = { pending: '⏳', uploading: '⬆', done: '✓', error: '✗', sent: '✓' };
+            const st = document.createElement('div'); st.className = 'gi-status ' + (item.uploadStatus || 'pending'); st.textContent = stMap[item.uploadStatus] || ''; div.appendChild(st);
         }
 
-        // ─────────────────────────────────────────────
-        //  SETTINGS
-        // ─────────────────────────────────────────────
-        function openSettings() {
-            $('inp-url').value = BACKEND_URL;
-            updateSettingsInfo();
-            $('settings').style.display = 'flex';
-        }
+        // ── SETTINGS ──
+        function openSettings() { $('inp-url').value = BACKEND_URL; updateSettingsInfo(); $('settings').style.display = 'flex'; }
         function closeSettings() { $('settings').style.display = 'none'; }
-        function saveSettings() {
-            const url = $('inp-url').value.trim();
-            if (!url) return;
-            BACKEND_URL = url;
-            localStorage.setItem('backend_url', url);
-            closeSettings();
-            showToast('✅ Сохранено');
-        }
-        async function reconnect() {
-            closeSettings();
-            sessionId = null;
-            stopTimer();
-            try {
-                await ensureSession();
-                showToast('✅ Сессия создана');
-            } catch (e) {
-                showToast('❌ ' + e.message);
-            }
-        }
+        function saveSettings() { const url = $('inp-url').value.trim(); if (!url) return; BACKEND_URL = url; localStorage.setItem('backend_url', url); closeSettings(); showToast('✅ Сохранено'); }
+        async function reconnect() { closeSettings(); sessionId = null; stopTimer(); try { await ensureSession(); showToast('✅ Сессия создана'); } catch (e) { showToast('❌ ' + e.message); } }
         $('settings').addEventListener('click', e => { if (e.target === $('settings')) closeSettings(); });
 
-        // ─────────────────────────────────────────────
-        //  TOAST
-        // ─────────────────────────────────────────────
+        // ── TOAST ──
         let toastTimer = null;
-        function showToast(msg) {
-            const t = $('toast'); t.textContent = msg; t.className = 'show';
-            clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = '', 2800);
-        }
+        function showToast(msg) { const t = $('toast'); t.textContent = msg; t.className = 'show'; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = '', 2800); }
+        function $(id) { return document.getElementById(id); }
 
-        function $(id) { return document.getElementById(id) }
-
-        // ── STARS (генерируем при загрузке) ──
-        (function () {
-            const container = document.getElementById('stars');
-            if (!container) return;
-            const count = 55;
-            for (let i = 0; i < count; i++) {
-                const s = document.createElement('span');
-                const size = Math.random() * 2.5 + 1;
-                s.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random() * 100}%;top:${Math.random() * 100}%;
-      --d:${(Math.random() * 4 + 2).toFixed(1)}s;
-      --delay:-${(Math.random() * 5).toFixed(1)}s;
-      opacity:${Math.random() * .5 + .1};
-    `;
-                container.appendChild(s);
-            }
-        })();
+        // ── STARS ──
+        (function () { const c = document.getElementById('stars'); if (!c) return; for (let i = 0; i < 55; i++) { const s = document.createElement('span'); const sz = Math.random() * 2.5 + 1; s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;--d:${(Math.random() * 4 + 2).toFixed(1)}s;--delay:-${(Math.random() * 5).toFixed(1)}s;opacity:${Math.random() * .5 + .1};`; c.appendChild(s); } })();
     </script>
 </body>
 
